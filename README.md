@@ -37,7 +37,6 @@ kind create cluster --config kind-cluster-with-extramounts.yaml
 Initialize the management cluster:
 
 ```
-export CLUSTER_TOPOLOGY=true
 
 # Initialize the management cluster
 clusterctl init --infrastructure docker
@@ -55,12 +54,23 @@ You can now create your first workload cluster by running the following:
 
 The CAPI cluster resources have already been generated [here](./clusters/my-cluster/). Lets deploy flux to the cluster and let that manage the install.
 
-export GITHUB_TOKEN=<add github token here>
-export GITHUB_USER=<add github username here>
+To do this though, yoiu cna run this command:
+
+```
+clusterctl generate cluster capi-quickstart --flavor development \
+  --kubernetes-version v1.23.1 \
+  --control-plane-machine-count=1 \
+  --worker-machine-count=1 \
+  > ./clusters/my-cluster/capi-quickstart.yaml
+```
 
 Deploy flux to the cluster:
 
 ```
+export GITHUB_TOKEN=<add github token here>
+
+export GITHUB_USER=<add github username here>
+
 flux bootstrap github \
   --owner=$GITHUB_USER \
   --repository=capi-docker-dev \
