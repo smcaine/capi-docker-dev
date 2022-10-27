@@ -31,7 +31,7 @@ EOF
 Apply this config:
 
 ```
-kind create cluster --config kind-cluster-with-extramounts.yaml
+kind create cluster --image kindest/node:v1.23.1 --config kind-cluster-with-extramounts.yaml
 ```
 
 Initialize the management cluster:
@@ -83,4 +83,15 @@ Wait for the workload cluster deployment to complete:
 
 ```
 kubectl get kubeadmcontrolplane -A --watch  
+```
+
+Once initialized, get the workload kubeconfig:
+
+```
+clusterctl get kubeconfig capi-quickstart > capi-quickstart.kubeconfig
+```
+When using using Docker Desktop on macOS or Docker Desktop (Docker Engine works fine) on Linux, you’ll need to take a few extra steps to get the kubeconfig for a workload cluster created with the Docker provider.
+```
+# Point the kubeconfig to the exposed port of the load balancer, rather than the inaccessible container IP.
+sed -i -e "s/server:.*/server: https:\/\/$(docker port capi-quickstart-lb 6443/tcp | sed "s/0.0.0.0/127.0.0.1/")/g" ./capi-quickstart.kubeconfig
 ```
