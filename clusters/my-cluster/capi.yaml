@@ -131,10 +131,6 @@ spec:
   - definitions:
     - jsonPatches:
       - op: add
-        path: /spec/template/spec/kubeadmConfigSpec/clusterConfiguration/apiServer/extraArgs
-        value:
-          admission-control-config-file: /etc/kubernetes/kube-apiserver-admission-pss.yaml
-      - op: add
         path: /spec/template/spec/kubeadmConfigSpec/clusterConfiguration/apiServer/extraVolumes
         value:
         - hostPath: /etc/kubernetes/kube-apiserver-admission-pss.yaml
@@ -268,7 +264,9 @@ spec:
             - host.docker.internal
           controllerManager:
             extraArgs:
+              admission-control-config-file: /etc/kubernetes/kube-apiserver-admission-pss.yaml
               enable-hostpath-provisioner: "true"
+              audit-log-maxbackup: '10'
         initConfiguration:
           nodeRegistration:
             criSocket: unix:///var/run/containerd/containerd.sock
